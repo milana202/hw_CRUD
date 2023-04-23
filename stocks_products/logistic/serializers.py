@@ -30,10 +30,13 @@ class StockSerializer(serializers.ModelSerializer):
         # создаем склад по его параметрам
         stock = super().create(validated_data)
 
+        for position in positions:
+            obj, created = StockProduct.objects.get_or_create(**position)
+            post.stock.add(obj)
+
         # здесь вам надо заполнить связанные таблицы
         # в нашем случае: таблицу StockProduct
         # с помощью списка positions
-
         return stock
 
     def update(self, instance, validated_data):
@@ -42,6 +45,11 @@ class StockSerializer(serializers.ModelSerializer):
 
         # обновляем склад по его параметрам
         stock = super().update(instance, validated_data)
+        pos_list = []
+        for position in positions:
+            obj, created = StockProduct.objects.get_or_create(**position)
+            pos_list.append(position)
+        post.stock.set(pos_list)
 
         # здесь вам надо обновить связанные таблицы
         # в нашем случае: таблицу StockProduct
