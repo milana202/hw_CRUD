@@ -47,7 +47,7 @@ class StockSerializer(serializers.ModelSerializer):
         stock = super().update(instance, validated_data)
         pos_list = []
         for position in positions:
-            StockProduct.objects.update_or_create(stock=stock, **position)
+            StockProduct.objects.update_or_create(**position, defaults={'address': 'unknown adress', 'products':'products list'})
             pos_list.append(position)
         post.stock.set(pos_list)
 
